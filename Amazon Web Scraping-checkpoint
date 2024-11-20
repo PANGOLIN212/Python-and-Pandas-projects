@@ -1,0 +1,324 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 73,
+   "id": "625cc961-0f54-426d-80cd-fd85e0ac59a2",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#import libraries\n",
+    "from bs4 import BeautifulSoup\n",
+    "import requests\n",
+    "import time\n",
+    "import datetime\n",
+    "\n",
+    "import smtplib"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 75,
+   "id": "d4c1784d-0fa2-4c16-9d5b-e7920b938644",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Title not found\n",
+      "Price not found\n"
+     ]
+    }
+   ],
+   "source": [
+    "#Connect to website and pull in data\n",
+    "URL='https://www.amazon.com/s?k=amazon+official+site&adgrpid=84064206953&hvadid=585412622374&hvdev=c&hvlocphy=9209360&hvnetw=g&hvqmt=b&hvrand=7762784879925172975&hvtargid=kwd-298699051858&hydadcr=22363_13333068&tag=hydglogoo-20&ref=pd_sl_7q3otxx5gn_b'\n",
+    "headers = { \"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36\", \"Accept-Encoding\":\"gzip, deflate\", \"Accept\":\"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"DNT\":\"1\",\"Connection\":\"close\", \"Upgrade-Insecure-Requests\":\"1\"}\n",
+    "page = requests.get(URL, headers=headers)\n",
+    "\n",
+    "soup1 = BeautifulSoup(page.content, \"html.parser\")\n",
+    "\n",
+    "soup2 = BeautifulSoup(soup1.prettify(), \"html.parser\")\n",
+    "\n",
+    "title = soup2.find(id='productTitle')\n",
+    "price = soup2.find(id='priceblock_ourprice')\n",
+    "\n",
+    "if title:\n",
+    "    title = title.get_text().strip()\n",
+    "else:\n",
+    "    title = \"Title not found\"\n",
+    "\n",
+    "if price:\n",
+    "    price = price.get_text().strip()\n",
+    "else:\n",
+    "    price = \"Price not found\"\n",
+    "\n",
+    "print(title)\n",
+    "print(price)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 76,
+   "id": "11c94f0d-65ad-4935-95fa-3ff60d9095d5",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Title not found\n",
+      "rice not found\n"
+     ]
+    }
+   ],
+   "source": [
+    "#Clean up the data a little bit\n",
+    "price= price.strip()[1:]\n",
+    "title=title.strip()\n",
+    "\n",
+    "print(title)\n",
+    "print(price)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 77,
+   "id": "5b5d416b-d87f-42c8-ada5-0f258ad35b55",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2024-11-17 18:47:16.352180\n"
+     ]
+    }
+   ],
+   "source": [
+    "import datetime\n",
+    "\n",
+    "#Use datetime.datetime.now() for current date and time\n",
+    "today= datetime.datetime.now()\n",
+    "print(today)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 78,
+   "id": "fe9bc5ab-546c-4368-8c37-766f1595a468",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#Create CSV and write headers and data into the file\n",
+    "import csv\n",
+    "\n",
+    "header= ['Title','Price','Date']\n",
+    "data=[title,price,today]\n",
+    "\n",
+    "with open('AmazonWebScraperDataset.csv','w',newline='',encoding='UTF8') as f:\n",
+    "    writer = csv.writer(f)\n",
+    "    writer.writerow(header)\n",
+    "    writer.writerow(data)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 93,
+   "id": "760b4a55-7e7b-4b55-a01c-a46b1312c669",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "                                               Title  Price   Date\n",
+      "0  Funny Got Data MIS Data Systems Business Analy...  16.99  45613\n",
+      "1  Funny Got Data MIS Data Systems Business Analy...  16.99  45613\n"
+     ]
+    }
+   ],
+   "source": [
+    "import pandas as pd\n",
+    "\n",
+    "# Use read_excel for .xlsx files\n",
+    "df = pd.read_excel(r\"C:\\Users\\pc\\Documents\\Apocalypse folder\\AmazonWebScraperDataset.xlsx\")\n",
+    "print(df)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 85,
+   "id": "3216e099-86ed-4f32-ad62-a50df1a7771f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#Now we are appending data to the csv\n",
+    "\n",
+    "with open('AmazonWebScraperDataset.csv','a+', newline='',encoding='UTF8') as f:\n",
+    "    writer=csv.writer(f)\n",
+    "    writer.writerow(data)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 97,
+   "id": "84f061af-d8f5-4f3b-8469-a5a379b63a1b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#Combine all of the above code into one function\n",
+    "\n",
+    "\n",
+    "def check_price():\n",
+    "    URL = 'https://www.amazon.com/Funny-Data-Systems-Business-Analyst/dp/B07FNW9FGJ/ref=sr_1_3?dchild=1&keywords=data%2Banalyst%2Btshirt&qid=1626655184&sr=8-3&customId=B0752XJYNL&th=1'\n",
+    "\n",
+    "    headers = {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36\", \"Accept-Encoding\":\"gzip, deflate\", \"Accept\":\"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"DNT\":\"1\",\"Connection\":\"close\", \"Upgrade-Insecure-Requests\":\"1\"}\n",
+    "\n",
+    "    page = requests.get(URL, headers=headers)\n",
+    "\n",
+    "    soup1 = BeautifulSoup(page.content, \"html.parser\")\n",
+    "\n",
+    "    soup2 = BeautifulSoup(soup1.prettify(), \"html.parser\")\n",
+    "\n",
+    "    title = soup2.find(id='productTitle').get_text()\n",
+    "\n",
+    "    price = soup2.find(id='priceblock_ourprice').get_text()\n",
+    "    \n",
+    "    if title:\n",
+    "        title = title.get_text().strip()\n",
+    "    else:\n",
+    "        title = \"Title not found\"\n",
+    "\n",
+    "    if price:\n",
+    "        price = price.get_text().strip()\n",
+    "    else:\n",
+    "        price = \"Price not found\"\n",
+    "\n",
+    "    price = price.strip()[1:]\n",
+    "    title = title.strip()\n",
+    "\n",
+    "    import datetime\n",
+    "\n",
+    "    today = datetime.datetime.today()\n",
+    "    \n",
+    "    import csv \n",
+    "\n",
+    "    header = ['Title', 'Price', 'Date']\n",
+    "    data = [title, price, today]\n",
+    "\n",
+    "    with open('AmazonWebScraperDataset.csv', 'a+', newline='', encoding='UTF8') as f:\n",
+    "        writer = csv.writer(f)\n",
+    "        writer.writerow(data)\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "162291f2-a136-41e2-9147-b1f610dfce76",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Error in check_price: 'NoneType' object has no attribute 'get_text'\n",
+      "Check the HTML structure or network request.\n"
+     ]
+    }
+   ],
+   "source": [
+    "import time\n",
+    "\n",
+    "while True:\n",
+    "    try:\n",
+    "        check_price()  # Call the previously defined function\n",
+    "    except AttributeError as e:\n",
+    "        print(f\"Error in check_price: {e}\")\n",
+    "        print(\"Check the HTML structure or network request.\")\n",
+    "    except Exception as e:\n",
+    "        print(f\"Unexpected error: {e}\")\n",
+    "    time.sleep(86400)  # Wait for 24 hours"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "cafbc91a-dd32-426a-81c8-14c7a592377f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pandas as pd\n",
+    "\n",
+    "# Use read_excel for .xlsx files\n",
+    "df=pd.read_csv(r\"C:\\Users\\pc\\Documents\\Apocalypse folder\\AmazonWebScraperDataset.xlsx\")\n",
+    "print(df)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "73cf2832-94d9-427f-9b58-dca7d2f4b802",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#send myself an email(just for fun) when a price hits below a certain level you can try it out with this script\n",
+    "\n",
+    "def send_mail():\n",
+    "    server= smtplib.SMTP_SSL('smtp.gmail.com',465)\n",
+    "    server.ehlo()\n",
+    "    #server.starttls()\n",
+    "    server.ehlo()\n",
+    "    server.login('prudencemburu1@gmail.com','')\n",
+    "\n",
+    "subject= \"The Shirt you want is below $15! Now is your chance to buy!\n",
+    "\n",
+    "body= \"Zoey, This is the moment we have been waiting for. Now is your chance to pick up the shirt of your dreams. Don't mess it up! Link here: https://www.amazon.com/Funny-Data-Systems-Business-Analyst/dp/B07FNW9FGJ/ref=sr_1_3?dchild=1&keywords=data+analyst+tshirt&qid=1626655184&sr=8-3\"\n",
+    "\n",
+    "msg = f \"Subject:{subject}\\n\\n{body}\"\n",
+    "\n",
+    "server_sendmail('prudencemburu1@gmail.com', msg)\n",
+    "    "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "01746241-b725-4736-b7c9-1c6f0f578e34",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "139a6f97-80b1-4586-9e3e-ee01c9d8f747",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.12.4"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

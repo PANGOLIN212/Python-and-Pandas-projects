@@ -1,0 +1,106 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 67,
+   "id": "0b912dd7-97b8-4fe2-a118-7be4758e5a14",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import os, shutil"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 69,
+   "id": "ecc3e7df-717a-43d3-b22d-56440a9b0c7e",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "path =r\"C:/Users/pc/Pictures/PYTHON/\""
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 71,
+   "id": "56903b25-af31-419e-a662-becc1b1f1a3a",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "file_name = os.listdir(path)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 73,
+   "id": "e663db6d-00ac-4928-8fe9-ecf6258f12bf",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "There are files in this path that were not moved\n"
+     ]
+    }
+   ],
+   "source": [
+    "folder_names = [ 'csv files', 'image files','text files']\n",
+    "\n",
+    "for loop in range (0,3):\n",
+    "    if not os.path.exists(path + folder_names[loop]):\n",
+    "        print (path + folder_names[loop])\n",
+    "        os.makedirs(path + folder_names [loop])\n",
+    "        \n",
+    "\n",
+    "for file in file_name:\n",
+    "    if \".csv\" in file and not os.path.exists(path + \"csv files/\" + file):\n",
+    "        shutil.move (path + file, path + \"csv files/\" +file)\n",
+    "    elif \".png\" in file and not os.path.exists (path + \"image files/\" + file):\n",
+    "        shutil.move (path +file, path + \"image files/\" + file)\n",
+    "    elif \".txt\" in file and not os.path.exists (path + \"text files/\" +file):\n",
+    "        shutil.move(path +file, path + \"text files/\" +file)\n",
+    "else :\n",
+    "    print (\"There are files in this path that were not moved\")\n",
+    "        "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 61,
+   "id": "9a7e4389-e5a9-4f88-b255-4b10f105f174",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "57214fed-e8ef-4ad2-990e-19ee8deb39fd",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.12.4"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
